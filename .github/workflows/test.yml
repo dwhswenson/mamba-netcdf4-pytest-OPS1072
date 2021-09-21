@@ -1,0 +1,35 @@
+name: "Tests"
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+
+jobs:
+  mamba:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        CONDA_PY:
+          -3.9
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with: 
+          auto-update-conda: true
+          python-version: ${{ matrix.CONDA_PY }}
+          miniforge-variant: Mambaforge
+      - name: "Install reqs"
+        env:
+          CONDA_PY: ${{ matrix.CONDA_PY }}
+        run: |
+          mamba install -yq python=${CONDA_PY} netcdf4 pytest pytest-cov
+      - name: "Run test"
+        run: py.test -vv -s --cov --cov --cov-report xml

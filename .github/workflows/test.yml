@@ -1,8 +1,11 @@
 name: "Tests"
 on:
+  pull_request:
+    branches:
+      - master
   push:
     branches:
-      - main
+      - master
 
 defaults:
   run:

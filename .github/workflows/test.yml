@@ -32,6 +32,11 @@ jobs:
         env:
           CONDA_PY: ${{ matrix.CONDA_PY }}
         run: |
-          mamba install -yq python=${CONDA_PY} netcdf4 pytest pytest-cov
+          CONDAREQS="python=${CONDA_PY} future svgwrite numpy scipy pandas matplotlib psutil ujson mdtraj netcdf4 pytest pytest-cov nose coveralls nbval"
+          PIPREQS=""
+          conda install -yq -c conda-forge -c omnia $CONDAREQS
+          if [ -n "$PIPREQS" ]; then
+            pip install $PIPREQS
+          fi
       - name: "Run test"
         run: py.test -vv -s --cov --cov --cov-report xml
